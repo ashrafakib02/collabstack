@@ -2,7 +2,6 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import CreateTaskForm from "@/features/task/components/create-task-form";
-import TaskActions from "@/features/task/components/task-actions";
 import TaskBoard from "@/features/task/components/task-board";
 
 type ProjectPageProps = {
