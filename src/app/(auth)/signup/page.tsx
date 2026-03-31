@@ -11,7 +11,7 @@ export default function SignupPage() {
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
 
-  const handleSignup = async (e: React.SubmitEvent<HTMLFormElement>) => {
+  const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     setMessage("");
 
@@ -30,7 +30,7 @@ export default function SignupPage() {
       return;
     }
 
-    setMessage("Signup successful. Please check your email.");
+    setMessage("Signup successful. Now login with your account.");
     setName("");
     setEmail("");
     setPassword("");
