@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import CreateTaskForm from "@/features/task/components/create-task-form";
+import TaskActions from "@/features/task/components/task-actions";
 
 type ProjectPageProps = {
   params: Promise<{
@@ -56,9 +57,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
 
   const { data: tasks, error: tasksError } = await supabase
     .from("tasks")
-    .select(
-      "id, title, description, status, priority, created_at"
-    )
+    .select("id, title, description, status, priority, created_at")
     .eq("project_id", project.id)
     .order("created_at", { ascending: false });
 
@@ -108,6 +107,8 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
                   <p className="mt-2 text-xs text-gray-500">
                     Priority: {task.priority}
                   </p>
+
+                  <TaskActions taskId={task.id} currentStatus={task.status} />
                 </div>
               ))}
             </div>
