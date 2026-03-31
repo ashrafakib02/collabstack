@@ -11,23 +11,33 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setMessage("");
+    setLoading(true);
 
-    const { error } = await supabase.auth.signInWithPassword({
+    const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
 
     if (error) {
       setMessage(error.message);
+      setLoading(false);
+      return;
+    }
+
+    if (!data.session) {
+      setMessage("Login failed. No active session returned.");
+      setLoading(false);
       return;
     }
 
     router.push("/dashboard");
     router.refresh();
+    setLoading(false);
   };
 
   return (
@@ -56,9 +66,10 @@ export default function LoginPage() {
 
         <button
           type="submit"
-          className="w-full rounded bg-black p-3 text-white"
+          disabled={loading}
+          className="w-full rounded bg-black p-3 text-white disabled:opacity-50"
         >
-          Login
+          {loading ? "Logging in..." : "Login"}
         </button>
 
         {message ? <p className="text-sm">{message}</p> : null}
