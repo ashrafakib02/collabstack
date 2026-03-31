@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import LogoutButton from "@/components/shared/logout-button";
@@ -25,7 +26,7 @@ export default async function DashboardPage() {
         slug,
         created_at
       )
-      `
+      `,
     )
     .eq("user_id", user.id);
 
@@ -70,7 +71,11 @@ export default async function DashboardPage() {
                   className="rounded-lg border p-4 shadow-sm"
                 >
                   <h3 className="text-lg font-semibold">
-                    {item.workspace!.name}
+                    <Link
+                      href={`/dashboard/workspaces/${item.workspace!.slug}`}
+                    >
+                      {item.workspace!.name}
+                    </Link>
                   </h3>
                   <p className="mt-1 text-sm text-gray-600">
                     Slug: {item.workspace!.slug}
