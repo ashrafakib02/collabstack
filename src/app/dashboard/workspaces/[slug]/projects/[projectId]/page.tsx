@@ -3,6 +3,7 @@ import { notFound, redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import CreateTaskForm from "@/features/task/components/create-task-form";
 import TaskActions from "@/features/task/components/task-actions";
+import TaskBoard from "@/features/task/components/task-board";
 
 type ProjectPageProps = {
   params: Promise<{
@@ -85,33 +86,12 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
         <CreateTaskForm projectId={project.id} />
 
         <section className="space-y-4">
-          <h2 className="text-2xl font-semibold">Tasks</h2>
+          <h2 className="text-2xl font-semibold">Task Board</h2>
 
           {!tasks || tasks.length === 0 ? (
             <p className="text-sm text-gray-600">No task created yet.</p>
           ) : (
-            <div className="grid gap-4">
-              {tasks.map((task) => (
-                <div key={task.id} className="rounded-lg border p-4 shadow-sm">
-                  <div className="flex items-center justify-between gap-4">
-                    <h3 className="text-lg font-semibold">{task.title}</h3>
-                    <span className="rounded border px-2 py-1 text-xs">
-                      {task.status}
-                    </span>
-                  </div>
-
-                  <p className="mt-2 text-sm text-gray-600">
-                    {task.description || "No description"}
-                  </p>
-
-                  <p className="mt-2 text-xs text-gray-500">
-                    Priority: {task.priority}
-                  </p>
-
-                  <TaskActions taskId={task.id} currentStatus={task.status} />
-                </div>
-              ))}
-            </div>
+            <TaskBoard tasks={tasks} />
           )}
         </section>
       </div>
