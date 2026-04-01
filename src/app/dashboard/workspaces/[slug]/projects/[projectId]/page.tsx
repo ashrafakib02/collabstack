@@ -65,7 +65,16 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
   if (tasksError) {
     console.error("Tasks list error:", tasksError.message);
   }
+  const { data: activityLogs, error: activityError } = await supabase
+    .from("activity_logs")
+    .select("id, action, details, created_at")
+    .eq("project_id", project.id)
+    .order("created_at", { ascending: false })
+    .limit(10);
 
+  if (activityError) {
+    console.error("Activity logs error:", activityError.message);
+  }
   return (
     <main className="min-h-screen p-6">
       <TaskRealtimeListener projectId={project.id} />
@@ -93,6 +102,22 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
             <p className="text-sm text-gray-600">No task created yet.</p>
           ) : (
             <TaskBoard tasks={tasks} />
+          )}
+        </section>
+        <section className="space-y-4">
+          <h2 className="text-2xl font-semibold">Recent Activity</h2>
+
+          {!activityLogs || activityLogs.length === 0 ? (
+            <p className="text-sm text-gray-600">No activity yet.</p>
+          ) : (
+            <div className="space-y-3">
+              {activityLogs.map((log) => (
+                <div key={log.id} className="rounded-lg border p-4 shadow-sm">
+                  <p className="text-sm font-medium">{log.details}</p>
+                  <p className="mt-1 text-xs text-gray-500">{log.action}</p>
+                </div>
+              ))}
+            </div>
           )}
         </section>
       </div>

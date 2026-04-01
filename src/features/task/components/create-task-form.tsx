@@ -19,49 +19,74 @@ export default function CreateTaskForm({ projectId }: CreateTaskFormProps) {
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleCreateTask = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setMessage("");
+ const handleCreateTask = async (e: React.FormEvent) => {
+  e.preventDefault();
+  setMessage("");
 
-    if (!title.trim()) {
-      setMessage("Task title is required.");
-      return;
-    }
+  if (!title.trim()) {
+    setMessage("Task title is required.");
+    return;
+  }
 
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
-    if (!user) {
-      setMessage("You are not authenticated.");
-      return;
-    }
+  if (!user) {
+    setMessage("You are not authenticated.");
+    return;
+  }
 
-    setLoading(true);
+  setLoading(true);
 
-    const { error } = await supabase.from("tasks").insert({
+  const { data: project, error: projectError } = await supabase
+    .from("projects")
+    .select("id, workspace_id")
+    .eq("id", projectId)
+    .single();
+
+  if (projectError || !project) {
+    setMessage("Project not found.");
+    setLoading(false);
+    return;
+  }
+
+  const { data: task, error } = await supabase
+    .from("tasks")
+    .insert({
       project_id: projectId,
       title,
       description,
       status,
       priority,
       created_by: user.id,
-    });
+    })
+    .select("id, title")
+    .single();
 
-    if (error) {
-      setMessage(error.message);
-      setLoading(false);
-      return;
-    }
-
-    setTitle("");
-    setDescription("");
-    setStatus("todo");
-    setPriority("medium");
-    setMessage("Task created successfully.");
+  if (error || !task) {
+    setMessage(error?.message || "Failed to create task.");
     setLoading(false);
-    router.refresh();
-  };
+    return;
+  }
+
+  await supabase.from("activity_logs").insert({
+    workspace_id: project.workspace_id,
+    project_id: project.id,
+    task_id: task.id,
+    user_id: user.id,
+    action: "task_created",
+    details: `Created task "${task.title}"`,
+  });
+
+  setTitle("");
+  setDescription("");
+  setStatus("todo");
+  setPriority("medium");
+  setMessage("Task created successfully.");
+  setLoading(false);
+  router.refresh();
+};
 
   return (
     <form

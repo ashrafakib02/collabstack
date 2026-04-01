@@ -28,6 +28,38 @@ export default function TaskActions({
     setMessage("");
     setLoading(true);
 
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) {
+      setMessage("You are not authenticated.");
+      setLoading(false);
+      return;
+    }
+
+    const { data: task, error: taskError } = await supabase
+      .from("tasks")
+      .select(
+        `
+        id,
+        title,
+        project_id,
+        projects (
+          id,
+          workspace_id
+        )
+        `
+      )
+      .eq("id", taskId)
+      .single();
+
+    if (taskError || !task) {
+      setMessage("Task not found.");
+      setLoading(false);
+      return;
+    }
+
     const { error } = await supabase
       .from("tasks")
       .update({ status: newStatus })
@@ -37,6 +69,19 @@ export default function TaskActions({
       setMessage(error.message);
       setLoading(false);
       return;
+    }
+
+    const project = Array.isArray(task.projects) ? task.projects[0] : task.projects;
+
+    if (project) {
+      await supabase.from("activity_logs").insert({
+        workspace_id: project.workspace_id,
+        project_id: task.project_id,
+        task_id: task.id,
+        user_id: user.id,
+        action: "task_status_updated",
+        details: `Changed task "${task.title}" status to "${newStatus}"`,
+      });
     }
 
     setMessage("Status updated.");
@@ -51,6 +96,51 @@ export default function TaskActions({
 
     setMessage("");
     setLoading(true);
+
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) {
+      setMessage("You are not authenticated.");
+      setLoading(false);
+      return;
+    }
+
+    const { data: task, error: taskError } = await supabase
+      .from("tasks")
+      .select(
+        `
+        id,
+        title,
+        project_id,
+        projects (
+          id,
+          workspace_id
+        )
+        `
+      )
+      .eq("id", taskId)
+      .single();
+
+    if (taskError || !task) {
+      setMessage("Task not found.");
+      setLoading(false);
+      return;
+    }
+
+    const project = Array.isArray(task.projects) ? task.projects[0] : task.projects;
+
+    if (project) {
+      await supabase.from("activity_logs").insert({
+        workspace_id: project.workspace_id,
+        project_id: task.project_id,
+        task_id: task.id,
+        user_id: user.id,
+        action: "task_deleted",
+        details: `Deleted task "${task.title}"`,
+      });
+    }
 
     const { error } = await supabase.from("tasks").delete().eq("id", taskId);
 
