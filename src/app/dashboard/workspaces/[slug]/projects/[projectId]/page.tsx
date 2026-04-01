@@ -3,6 +3,7 @@ import { notFound, redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import CreateTaskForm from "@/features/task/components/create-task-form";
 import TaskBoard from "@/features/task/components/task-board";
+import TaskRealtimeListener from "@/features/realtime/components/task-realtime-listener";
 
 type ProjectPageProps = {
   params: Promise<{
@@ -67,6 +68,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
 
   return (
     <main className="min-h-screen p-6">
+      <TaskRealtimeListener projectId={project.id} />
       <div className="mx-auto max-w-5xl space-y-8">
         <div className="space-y-2">
           <Link
