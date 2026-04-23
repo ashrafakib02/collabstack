@@ -1,5 +1,6 @@
 import TaskActions from "@/features/task/components/task-actions";
 import TaskComments from "@/features/task/components/task-comments";
+import TaskAttachments from "@/features/task/components/task-attachments";
 
 type Task = {
   id: string;
@@ -19,10 +20,19 @@ type Comment = {
   author_name: string | null;
   author_email: string | null;
 };
-
+type Attachment = {
+  id: string;
+  task_id: string;
+  file_name: string;
+  file_path: string;
+  file_size: number | null;
+  mime_type: string | null;
+  created_at: string;
+};
 type TaskBoardProps = {
   tasks: Task[];
   commentsByTask: Record<string, Comment[]>;
+  attachmentsByTask: Record<string, Attachment[]>;
 };
 
 const columns = [
@@ -31,7 +41,11 @@ const columns = [
   { key: "done", title: "Done" },
 ];
 
-export default function TaskBoard({ tasks, commentsByTask }: TaskBoardProps) {
+export default function TaskBoard({
+  tasks,
+  commentsByTask,
+  attachmentsByTask,
+}: TaskBoardProps) {
   return (
     <div className="grid gap-6 md:grid-cols-3">
       {columns.map((column) => {
@@ -67,6 +81,10 @@ export default function TaskBoard({ tasks, commentsByTask }: TaskBoardProps) {
                     </p>
 
                     <TaskActions taskId={task.id} currentStatus={task.status} />
+                    <TaskAttachments
+                      taskId={task.id}
+                      initialAttachments={attachmentsByTask[task.id] ?? []}
+                    />
                     <TaskComments
                       taskId={task.id}
                       initialComments={commentsByTask[task.id] ?? []}

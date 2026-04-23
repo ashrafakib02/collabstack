@@ -5,7 +5,6 @@ import CreateTaskForm from "@/features/task/components/create-task-form";
 import TaskBoard from "@/features/task/components/task-board";
 import TaskRealtimeListener from "@/features/realtime/components/task-realtime-listener";
 
-
 type ProjectPageProps = {
   params: Promise<{
     slug: string;
@@ -110,6 +109,34 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
   if (activityError) {
     console.error("Activity logs error:", activityError.message);
   }
+
+  const { data: attachmentsData, error: attachmentsError } = await supabase
+    .from("task_attachments")
+    .select(
+      "id, task_id, file_name, file_path, file_size, mime_type, created_at",
+    )
+    .in(
+      "task_id",
+      tasks && tasks.length > 0
+        ? tasks.map((task) => task.id)
+        : ["00000000-0000-0000-0000-000000000000"],
+    )
+    .order("created_at", { ascending: true });
+
+  if (attachmentsError) {
+    console.error("Attachments list error:", attachmentsError.message);
+  }
+  const attachmentsByTask =
+  attachmentsData?.reduce<Record<string, typeof attachmentsData>>(
+    (acc, attachment) => {
+      if (!acc[attachment.task_id]) {
+        acc[attachment.task_id] = [];
+      }
+      acc[attachment.task_id].push(attachment);
+      return acc;
+    },
+    {}
+  ) ?? {};
   return (
     <main className="min-h-screen p-6">
       <TaskRealtimeListener projectId={project.id} />
@@ -136,7 +163,11 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
           {!tasks || tasks.length === 0 ? (
             <p className="text-sm text-gray-600">No task created yet.</p>
           ) : (
-            <TaskBoard tasks={tasks} commentsByTask={commentsByTask} />
+            <TaskBoard
+              tasks={tasks}
+              commentsByTask={commentsByTask}
+              attachmentsByTask={attachmentsByTask}
+            />
           )}
         </section>
         <section className="space-y-4">
