@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import CreateProjectForm from "@/features/project/components/create-project-form";
 import Link from "next/link";
 import InviteMemberForm from "@/features/workspace/components/invite-member-form";
+import WorkspacePresence from "@/features/realtime/components/workspace-presence";
 
 type WorkspacePageProps = {
   params: Promise<{
@@ -100,7 +101,14 @@ export default async function WorkspacePage({ params }: WorkspacePageProps) {
         </div>
 
         <CreateProjectForm workspaceId={workspace.id} />
-
+        <WorkspacePresence
+          workspaceId={workspace.id}
+          user={{
+            id: user.id,
+            email: user.email,
+            name: user.user_metadata?.name ?? null,
+          }}
+        />
         <section className="space-y-4">
           <h2 className="text-2xl font-semibold">Projects</h2>
 
