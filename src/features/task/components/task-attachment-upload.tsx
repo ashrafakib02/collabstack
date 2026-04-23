@@ -2,15 +2,12 @@
 
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useRef, useState } from "react";
 
-export default function TaskAttachmentUpload({
-  taskId,
-}: {
-  taskId: string;
-}) {
+export default function TaskAttachmentUpload({ taskId }: { taskId: string }) {
   const supabase = createClient();
   const router = useRouter();
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const [file, setFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
@@ -67,6 +64,9 @@ export default function TaskAttachmentUpload({
     }
 
     setFile(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
     setMessage("File uploaded successfully.");
     setLoading(false);
     router.refresh();
@@ -75,9 +75,10 @@ export default function TaskAttachmentUpload({
   return (
     <form onSubmit={handleUpload} className="mt-4 space-y-3">
       <input
+        ref={fileInputRef}
         type="file"
         onChange={(e) => setFile(e.target.files?.[0] ?? null)}
-        className="block w-full text-sm"
+        className="block w-full cursor-pointer rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-700 file:mr-4 file:rounded-md file:border-0 file:bg-black file:px-4 file:py-2 file:text-sm file:font-medium file:text-white hover:file:bg-gray-800"
       />
 
       <div className="flex items-center gap-3">

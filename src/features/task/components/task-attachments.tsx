@@ -12,7 +12,18 @@ type Attachment = {
   mime_type: string | null;
   created_at: string;
 };
+function formatFileName(fileName: string) {
+  const extIndex = fileName.lastIndexOf(".");
+  const name = extIndex !== -1 ? fileName.slice(0, extIndex) : fileName;
+  const ext = extIndex !== -1 ? fileName.slice(extIndex) : "";
 
+  if (name.length <= 12) return fileName;
+
+  const start = name.slice(0, 4);
+  const end = name.slice(-3);
+
+  return `${start}...${end}${ext}`;
+}
 export default function TaskAttachments({
   taskId,
   initialAttachments,
@@ -55,7 +66,9 @@ export default function TaskAttachments({
               className="flex items-center justify-between rounded border bg-gray-50 p-3"
             >
               <div>
-                <p className="text-sm font-medium">{attachment.file_name}</p>
+                <p className="text-sm font-medium">
+                  {formatFileName(attachment.file_name)}
+                </p>
                 <p className="text-xs text-gray-500">
                   {attachment.mime_type || "Unknown type"}
                 </p>
