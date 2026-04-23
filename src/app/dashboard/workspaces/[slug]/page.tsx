@@ -99,8 +99,6 @@ export default async function WorkspacePage({ params }: WorkspacePageProps) {
             Workspace slug: {workspace.slug}
           </p>
         </div>
-
-        <CreateProjectForm workspaceId={workspace.id} />
         <WorkspacePresence
           workspaceId={workspace.id}
           user={{
@@ -109,6 +107,8 @@ export default async function WorkspacePage({ params }: WorkspacePageProps) {
             name: user.user_metadata?.name ?? null,
           }}
         />
+        <CreateProjectForm workspaceId={workspace.id} />
+
         <section className="space-y-4">
           <h2 className="text-2xl font-semibold">Projects</h2>
 

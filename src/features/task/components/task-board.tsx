@@ -1,4 +1,5 @@
 import TaskActions from "@/features/task/components/task-actions";
+import TaskComments from "@/features/task/components/task-comments";
 
 type Task = {
   id: string;
@@ -9,8 +10,19 @@ type Task = {
   created_at: string;
 };
 
+type Comment = {
+  id: string;
+  task_id: string;
+  content: string;
+  created_at: string;
+  user_id: string;
+  author_name: string | null;
+  author_email: string | null;
+};
+
 type TaskBoardProps = {
   tasks: Task[];
+  commentsByTask: Record<string, Comment[]>;
 };
 
 const columns = [
@@ -19,17 +31,14 @@ const columns = [
   { key: "done", title: "Done" },
 ];
 
-export default function TaskBoard({ tasks }: TaskBoardProps) {
+export default function TaskBoard({ tasks, commentsByTask }: TaskBoardProps) {
   return (
     <div className="grid gap-6 md:grid-cols-3">
       {columns.map((column) => {
         const columnTasks = tasks.filter((task) => task.status === column.key);
 
         return (
-          <div
-            key={column.key}
-            className="rounded-lg border bg-gray-50 p-4"
-          >
+          <div key={column.key} className="rounded-lg border bg-gray-50 p-4">
             <div className="mb-4 flex items-center justify-between">
               <h3 className="text-lg font-semibold">{column.title}</h3>
               <span className="rounded-full bg-white px-2 py-1 text-xs border">
@@ -57,9 +66,10 @@ export default function TaskBoard({ tasks }: TaskBoardProps) {
                       {task.description || "No description"}
                     </p>
 
-                    <TaskActions
+                    <TaskActions taskId={task.id} currentStatus={task.status} />
+                    <TaskComments
                       taskId={task.id}
-                      currentStatus={task.status}
+                      initialComments={commentsByTask[task.id] ?? []}
                     />
                   </div>
                 ))
