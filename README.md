@@ -138,10 +138,13 @@ npm run dev
 
 ---
 
-👨‍💻 Author
-**Ashraful Islam**
+## 👨‍💻 Author
+
+**Ashraful Islam**  
 Full Stack Developer (Backend-focused)
--GitHub: https://github.com/ashrafakib02
+
+- GitHub: https://github.com/ashrafakib02
+- Portfolio: https://www.behance.net/iffathridy1
 ---
 
 ⭐ Why This Project Stands Out
