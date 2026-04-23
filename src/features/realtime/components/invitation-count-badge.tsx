@@ -3,6 +3,7 @@
 import { createClient } from "@/lib/supabase/client";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { Bell } from "lucide-react";
 
 export default function InvitationCountBadge({
   email,
@@ -48,18 +49,19 @@ export default function InvitationCountBadge({
     };
   }, [email]);
 
-  return (
-    <Link
-      href="/dashboard/invitations"
-      className="relative rounded border px-4 py-2 text-sm hover:bg-gray-100"
-    >
-      Invitations
+ return (
+  <Link
+    href="/dashboard/invitations"
+    title="Invitations"
+    className="relative flex items-center justify-center rounded-lg border p-2 hover:bg-gray-100 transition"
+  >
+    <Bell className="h-5 w-5" />
 
-      {count > 0 && (
-        <span className="absolute -right-2 -top-2 flex h-5 min-w-5 items-center justify-center rounded-full bg-red-600 px-1 text-xs text-white">
-          {count}
-        </span>
-      )}
-    </Link>
-  );
+    {count > 0 && (
+      <span className="absolute -right-1 -top-1 flex h-5 min-w-[20px] items-center justify-center rounded-full bg-red-600 px-1 text-[10px] font-semibold text-white">
+        {count > 9 ? "9+" : count}
+      </span>
+    )}
+  </Link>
+);
 }

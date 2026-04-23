@@ -136,7 +136,7 @@ export default function CreateTaskForm({ projectId }: CreateTaskFormProps) {
       <button
         type="submit"
         disabled={loading}
-        className="rounded bg-black px-4 py-2 text-white disabled:opacity-50"
+        className="rounded-lg bg-black px-4 py-2 text-white disabled:opacity-50"
       >
         {loading ? "Creating..." : "Create Task"}
       </button>

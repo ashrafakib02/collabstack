@@ -45,7 +45,9 @@ export default function TaskAttachments({
 
       <div className="mt-3 space-y-3">
         {attachments.length === 0 ? (
-          <p className="text-sm text-gray-500">No attachments yet.</p>
+          <div className="rounded-lg border border-dashed p-6 text-sm text-gray-500">
+            No attachments yet.
+          </div>
         ) : (
           attachments.map((attachment) => (
             <div

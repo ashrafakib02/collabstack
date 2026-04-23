@@ -171,7 +171,7 @@ export default function TaskActions({
       <button
         onClick={handleDelete}
         disabled={loading}
-        className="rounded bg-red-600 px-4 py-2 text-white disabled:opacity-50"
+        className="rounded-lg bg-red-600 px-4 py-2 text-white disabled:opacity-50"
       >
         Delete
       </button>

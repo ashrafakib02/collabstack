@@ -87,18 +87,21 @@ export default async function WorkspacePage({ params }: WorkspacePageProps) {
   }
 
   return (
-    <main className="min-h-screen p-6">
-      <div className="mx-auto max-w-5xl space-y-8">
-        <div className="space-y-2">
+    <main className="min-h-screen bg-gray-50 p-6">
+      <div className="mx-auto max-w-6xl space-y-8">
+        <div className="rounded-xl border bg-white p-6 shadow-sm">
           <Link href="/dashboard" className="text-sm text-blue-600 underline">
             Back to Dashboard
           </Link>
 
-          <h1 className="text-3xl font-bold">{workspace.name}</h1>
-          <p className="text-sm text-gray-600">
+          <h1 className="mt-3 text-3xl font-bold tracking-tight">
+            {workspace.name}
+          </h1>
+          <p className="mt-2 text-sm text-gray-600">
             Workspace slug: {workspace.slug}
           </p>
         </div>
+
         <WorkspacePresence
           workspaceId={workspace.id}
           user={{
@@ -113,7 +116,9 @@ export default async function WorkspacePage({ params }: WorkspacePageProps) {
           <h2 className="text-2xl font-semibold">Projects</h2>
 
           {!projects || projects.length === 0 ? (
-            <p className="text-sm text-gray-600">No project created yet.</p>
+            <div className="rounded-lg border border-dashed p-6 text-sm text-gray-500">
+              No project created yet.
+            </div>
           ) : (
             <div className="grid gap-4 md:grid-cols-2">
               {projects.map((project) => (
@@ -141,7 +146,9 @@ export default async function WorkspacePage({ params }: WorkspacePageProps) {
           <h2 className="text-2xl font-semibold">Workspace Members</h2>
 
           {!members || members.length === 0 ? (
-            <p className="text-sm text-gray-600">No members found.</p>
+            <div className="rounded-lg border border-dashed p-6 text-sm text-gray-500">
+              No members found.
+            </div>
           ) : (
             <div className="grid gap-4 md:grid-cols-2">
               {members.map((member) => {
@@ -173,7 +180,9 @@ export default async function WorkspacePage({ params }: WorkspacePageProps) {
           <h2 className="text-2xl font-semibold">Pending Invitations</h2>
 
           {!invitations || invitations.length === 0 ? (
-            <p className="text-sm text-gray-600">No invitations yet.</p>
+            <div className="rounded-lg border border-dashed p-6 text-sm text-gray-500">
+              No invitations yet.
+            </div>
           ) : (
             <div className="space-y-3">
               {invitations.map((invite) => (

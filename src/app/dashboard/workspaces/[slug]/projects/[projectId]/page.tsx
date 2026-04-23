@@ -127,21 +127,22 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
     console.error("Attachments list error:", attachmentsError.message);
   }
   const attachmentsByTask =
-  attachmentsData?.reduce<Record<string, typeof attachmentsData>>(
-    (acc, attachment) => {
-      if (!acc[attachment.task_id]) {
-        acc[attachment.task_id] = [];
-      }
-      acc[attachment.task_id].push(attachment);
-      return acc;
-    },
-    {}
-  ) ?? {};
+    attachmentsData?.reduce<Record<string, typeof attachmentsData>>(
+      (acc, attachment) => {
+        if (!acc[attachment.task_id]) {
+          acc[attachment.task_id] = [];
+        }
+        acc[attachment.task_id].push(attachment);
+        return acc;
+      },
+      {},
+    ) ?? {};
   return (
-    <main className="min-h-screen p-6">
+    <main className="min-h-screen bg-gray-50 p-6">
       <TaskRealtimeListener projectId={project.id} />
-      <div className="mx-auto max-w-5xl space-y-8">
-        <div className="space-y-2">
+
+      <div className="mx-auto max-w-6xl space-y-8">
+        <div className="rounded-xl border bg-white p-6 shadow-sm">
           <Link
             href={`/dashboard/workspaces/${workspace.slug}`}
             className="text-sm text-blue-600 underline"
@@ -149,8 +150,10 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
             Back to Workspace
           </Link>
 
-          <h1 className="text-3xl font-bold">{project.name}</h1>
-          <p className="text-sm text-gray-600">
+          <h1 className="mt-3 text-3xl font-bold tracking-tight">
+            {project.name}
+          </h1>
+          <p className="mt-2 text-sm text-gray-500">
             {project.description || "No description"}
           </p>
         </div>
@@ -161,7 +164,9 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
           <h2 className="text-2xl font-semibold">Task Board</h2>
 
           {!tasks || tasks.length === 0 ? (
-            <p className="text-sm text-gray-600">No task created yet.</p>
+            <div className="rounded-lg border border-dashed p-6 text-sm text-gray-500">
+              No task created yet.
+            </div>
           ) : (
             <TaskBoard
               tasks={tasks}
@@ -174,7 +179,9 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
           <h2 className="text-2xl font-semibold">Recent Activity</h2>
 
           {!activityLogs || activityLogs.length === 0 ? (
-            <p className="text-sm text-gray-600">No activity yet.</p>
+            <div className="rounded-lg border border-dashed p-6 text-sm text-gray-500">
+              No recent activity yet.
+            </div>
           ) : (
             <div className="space-y-3">
               {activityLogs.map((log) => (

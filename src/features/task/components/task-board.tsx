@@ -52,7 +52,7 @@ export default function TaskBoard({
         const columnTasks = tasks.filter((task) => task.status === column.key);
 
         return (
-          <div key={column.key} className="rounded-lg border bg-gray-50 p-4">
+          <div key={column.key} className="rounded-xl border bg-gray-100 p-4">
             <div className="mb-4 flex items-center justify-between">
               <h3 className="text-lg font-semibold">{column.title}</h3>
               <span className="rounded-full bg-white px-2 py-1 text-xs border">
@@ -62,16 +62,20 @@ export default function TaskBoard({
 
             <div className="space-y-4">
               {columnTasks.length === 0 ? (
-                <p className="text-sm text-gray-500">No tasks</p>
+                <div className="rounded-lg border border-dashed p-6 text-sm text-gray-500">
+                  No Task yet.
+                </div>
               ) : (
                 columnTasks.map((task) => (
                   <div
                     key={task.id}
-                    className="rounded-lg border bg-white p-4 shadow-sm"
+                    className="rounded-xl border bg-white p-4 shadow-sm transition hover:shadow-md"
                   >
-                    <div className="flex items-center justify-between gap-4">
-                      <h4 className="text-base font-semibold">{task.title}</h4>
-                      <span className="rounded border px-2 py-1 text-xs">
+                    <div className="flex items-start justify-between gap-4">
+                      <h4 className="text-base font-semibold leading-6">
+                        {task.title}
+                      </h4>
+                      <span className="rounded-full border px-2 py-1 text-xs capitalize">
                         {task.priority}
                       </span>
                     </div>
