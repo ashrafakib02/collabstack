@@ -6,20 +6,12 @@ import { useEffect, useState } from "react";
 
 type Comment = {
   id: string;
+  task_id: string;
   content: string;
   created_at: string;
-  profiles:
-    | {
-        id: string;
-        name: string | null;
-        email: string | null;
-      }
-    | {
-        id: string;
-        name: string | null;
-        email: string | null;
-      }[]
-    | null;
+  user_id: string;
+  author_name: string | null;
+  author_email: string | null;
 };
 
 export default function TaskComments({
@@ -33,25 +25,12 @@ export default function TaskComments({
   const [comments, setComments] = useState<Comment[]>(initialComments);
 
   const loadComments = async () => {
-    const { data, error } = await supabase
-      .from("task_comments")
-      .select(
-        `
-        id,
-        content,
-        created_at,
-        profiles (
-          id,
-          name,
-          email
-        )
-        `
-      )
-      .eq("task_id", taskId)
-      .order("created_at", { ascending: true });
+    const { data, error } = await supabase.rpc("get_task_comments_with_authors", {
+      p_task_id: taskId,
+    });
 
     if (!error && data) {
-      setComments(data);
+      setComments(data as Comment[]);
     }
   };
 
@@ -87,22 +66,18 @@ export default function TaskComments({
 
       <div className="mt-3 space-y-3">
         {comments.length === 0 ? (
-          <p className="text-sm text-gray-500">No comments yet.</p>
+          <div className="rounded-lg border border-dashed p-4 text-sm text-gray-500">
+            No comments yet.
+          </div>
         ) : (
-          comments.map((comment) => {
-            const profile = Array.isArray(comment.profiles)
-              ? comment.profiles[0]
-              : comment.profiles;
-
-            return (
-              <div key={comment.id} className="rounded border bg-gray-50 p-3">
-                <p className="text-sm font-medium">
-                  {profile?.name || profile?.email || "Unknown User"}
-                </p>
-                <p className="mt-1 text-sm text-gray-700">{comment.content}</p>
-              </div>
-            );
-          })
+          comments.map((comment) => (
+            <div key={comment.id} className="rounded border bg-gray-50 p-3">
+              <p className="text-sm font-medium">
+                {comment.author_name || comment.author_email || "Unknown User"}
+              </p>
+              <p className="mt-1 text-sm text-gray-700">{comment.content}</p>
+            </div>
+          ))
         )}
       </div>
 
