@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import LogoutButton from "@/components/shared/logout-button";
 import CreateWorkspaceForm from "@/features/workspace/components/create-workspace-form";
+import InvitationCountBadge from "@/features/realtime/components/invitation-count-badge";
 
 export default async function DashboardPage() {
   const supabase = await createClient();
@@ -14,6 +15,12 @@ export default async function DashboardPage() {
   if (!user) {
     redirect("/login");
   }
+
+  const { count: invitationCount } = await supabase
+    .from("invitations")
+    .select("*", { count: "exact", head: true })
+    .eq("email", user.email?.toLowerCase())
+    .eq("status", "pending");
 
   const { data: memberships, error } = await supabase
     .from("workspace_members")
@@ -33,7 +40,7 @@ export default async function DashboardPage() {
   if (error) {
     console.error("Workspace list error:", error.message);
   }
-
+  console.log("invitationCount:", invitationCount);
   const workspaceList =
     memberships
       ?.map((item) => ({
@@ -52,7 +59,10 @@ export default async function DashboardPage() {
             <h1 className="text-3xl font-bold">Dashboard</h1>
             <p className="mt-2 text-sm text-gray-600">Welcome, {user.email}</p>
           </div>
-
+          <InvitationCountBadge
+            email={user.email ?? ""}
+            initialCount={invitationCount ?? 0}
+          />
           <LogoutButton />
         </div>
 
