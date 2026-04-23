@@ -1,7 +1,13 @@
 import TaskActions from "@/features/task/components/task-actions";
 import TaskComments from "@/features/task/components/task-comments";
 import TaskAttachments from "@/features/task/components/task-attachments";
+import type { TaskComment, TaskAttachment } from "@/features/task/types";
 
+type TaskBoardProps = {
+  tasks: Task[];
+  commentsByTask: Record<string, TaskComment[]>;
+  attachmentsByTask: Record<string, TaskAttachment[]>;
+};
 type Task = {
   id: string;
   title: string;
@@ -9,30 +15,6 @@ type Task = {
   status: string;
   priority: string;
   created_at: string;
-};
-
-type Comment = {
-  id: string;
-  task_id: string;
-  content: string;
-  created_at: string;
-  user_id: string;
-  author_name: string | null;
-  author_email: string | null;
-};
-type Attachment = {
-  id: string;
-  task_id: string;
-  file_name: string;
-  file_path: string;
-  file_size: number | null;
-  mime_type: string | null;
-  created_at: string;
-};
-type TaskBoardProps = {
-  tasks: Task[];
-  commentsByTask: Record<string, Comment[]>;
-  attachmentsByTask: Record<string, Attachment[]>;
 };
 
 const columns = [

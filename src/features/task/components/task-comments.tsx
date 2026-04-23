@@ -9,7 +9,7 @@ type Comment = {
   task_id: string;
   content: string;
   created_at: string;
-  user_id: string;
+  user_id: string | null;
   author_name: string | null;
   author_email: string | null;
 };
