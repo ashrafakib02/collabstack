@@ -53,7 +53,9 @@ export default function TaskComments({
           await loadComments();
         }
       )
-      .subscribe();
+      .subscribe((status) => {
+        console.log(`task_comments ${taskId}:`, status);
+      });
 
     return () => {
       supabase.removeChannel(channel);
