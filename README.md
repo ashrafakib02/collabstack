@@ -129,7 +129,7 @@ npm run dev
 ```
 ---
 
-🚀 Future Improvements
+## 🚀 Future Improvements
 -Drag & drop Kanban (DnD)
 -Notifications dropdown
 -Role-based permissions (Admin vs Member)
@@ -147,9 +147,9 @@ Full Stack Developer (Backend-focused)
 - Portfolio: https://www.behance.net/iffathridy1
 ---
 
-⭐ Why This Project Stands Out
+## ⭐ Why This Project Stands Out
 
-This is not a demo project — it is a production-style SaaS system featuring:
+**This is not a demo project — it is a production-style SaaS system featuring:**
 
 -Real-time architecture
 -Multi-user collaboration
