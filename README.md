@@ -130,11 +130,12 @@ npm run dev
 ---
 
 ## 🚀 Future Improvements
--Drag & drop Kanban (DnD)
--Notifications dropdown
--Role-based permissions (Admin vs Member)
--Task deadlines & reminders
--Stripe billing integration
+
+- Drag & drop Kanban (DnD)
+- Notifications dropdown
+- Role-based permissions (Admin vs Member)
+- Task deadlines & reminders
+- Stripe billing integration
 
 ---
 
@@ -151,10 +152,10 @@ Full Stack Developer (Backend-focused)
 
 **This is not a demo project — it is a production-style SaaS system featuring:**
 
--Real-time architecture
--Multi-user collaboration
--Secure backend design
--Scalable database structure
+- Real-time architecture  
+- Multi-user collaboration  
+- Secure backend design  
+- Scalable database structure  
 
 Built to reflect how modern software is engineered in real-world environments.
 
