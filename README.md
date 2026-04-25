@@ -30,9 +30,13 @@ CollabStack enables teams to collaborate in real-time with workspaces, projects,
 - Real-time comments per task
 - Live invitation count (notification badge)
 - Online presence tracking
-
+- Drag-and-drop Kanban task board
+![Drag Kanban task](./screenshots/dragtask.gif)
+ 
 ### 💬 Communication
 - Task-level comments with real-time sync
+- Real-time typing indicators in task comments
+![Typing Indicators](./screenshots/typeindication.gif)
 - Activity logs (who did what)
 
 ### 📁 File Attachments
