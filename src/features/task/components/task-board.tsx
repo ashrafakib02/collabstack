@@ -134,7 +134,7 @@ export default function TaskBoard({
   };
 
   return (
-    <DndContext collisionDetection={closestCorners} onDragEnd={handleDragEnd}>
+    <DndContext id="task-board-dnd-context" collisionDetection={closestCorners} onDragEnd={handleDragEnd}>
       <div className="grid gap-6 md:grid-cols-3">
         {columns.map((column) => {
           const columnTasks = localTasks.filter(
