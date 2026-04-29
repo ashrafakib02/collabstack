@@ -25,11 +25,6 @@ jobs:
       
       - name: Install dependencies
         run: npm ci
-      
-      - name: Create environment file
-        run: |
-          echo "NEXT_PUBLIC_SUPABASE_URL=https://example.supabase.co" > .env.local
-          echo "NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV4YW1wbGUiLCJyb2xlIjoiYW5vbiIsImlhdCI6MTYxNjQ0MTYwMCwiZXhwIjoxOTMyMDE3NjAwfQ.example-placeholder-key" >> .env.local
-      
+              
       - name: Run tests
         run: npm run test:run
