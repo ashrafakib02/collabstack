@@ -35,9 +35,7 @@ export default function LoginPage() {
       return;
     }
 
-    router.push("/dashboard");
-    router.refresh();
-    setLoading(false);
+    router.replace("/dashboard");
   };
 
   return (
