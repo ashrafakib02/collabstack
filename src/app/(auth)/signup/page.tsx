@@ -75,7 +75,8 @@ export default function SignupPage() {
           Sign Up
         </button>
 
-        {message ? <p className="text-sm">{message}</p> : null}
+        {message ? <p className="text-sm text-red-600">&#x26A0; {message}</p> : null}
+        <p className="text-sm">Already have an account? <a href="/login" className="text-blue-500">Login</a></p>
       </form>
     </main>
   );

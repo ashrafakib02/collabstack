@@ -70,8 +70,10 @@ export default function LoginPage() {
           {loading ? "Logging in..." : "Login"}
         </button>
 
-        {message ? <p className="text-sm">{message}</p> : null}
+        {message ? <p className="text-sm text-red-600">&#x26A0; {message}</p> : null}
+        <p className="text-sm">Don&apos;t have an account? <a href="/signup" className="text-blue-500">Register</a></p>
       </form>
+      
     </main>
   );
 }
