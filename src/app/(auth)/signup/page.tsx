@@ -10,30 +10,67 @@ export default function SignupPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
-
+  const [loading, setLoading] = useState(false);
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     setMessage("");
+    setLoading(true);
 
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: {
-          name,
+    try {
+      const normalizedEmail = email.toLowerCase().trim();
+
+      const checkResponse = await fetch("/api/auth/check-signup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-      },
-    });
+        body: JSON.stringify({ email: normalizedEmail }),
+      });
 
-    if (error) {
-      setMessage(error.message);
-      return;
+      const checkResult = await checkResponse.json();
+
+      if (checkResult.status === "registered") {
+        setMessage("This email is already registered.");
+        return;
+      }
+
+      if (checkResult.status === "unverified") {
+        setMessage(
+          "This email is registered but not verified yet. Please check your inbox.",
+        );
+        return;
+      }
+
+      if (checkResult.status !== "available") {
+        setMessage(checkResult.message || "Something went wrong.");
+        return;
+      }
+
+      const { error } = await supabase.auth.signUp({
+        email: normalizedEmail,
+        password,
+        options: {
+          data: {
+            name,
+          },
+        },
+      });
+
+      if (error) {
+        setMessage(error.message);
+        return;
+      }
+
+      setMessage("Please check your email to verify your account.");
+      setName("");
+      setEmail("");
+      setPassword("");
+    } catch (error) {
+      console.error("Signup error:", error);
+      setMessage("Something went wrong. Please try again.");
+    } finally {
+      setLoading(false);
     }
-
-    setMessage("Signup successful. Now login with your account.");
-    setName("");
-    setEmail("");
-    setPassword("");
   };
 
   return (
@@ -48,6 +85,7 @@ export default function SignupPage() {
           type="text"
           placeholder="Name"
           value={name}
+          required={true}
           onChange={(e) => setName(e.target.value)}
           className="w-full rounded border p-3"
         />
@@ -70,13 +108,19 @@ export default function SignupPage() {
 
         <button
           type="submit"
-          className="w-full rounded bg-black p-3 text-white"
+          disabled={loading}
+          className="w-full rounded bg-black p-3 text-white disabled:opacity-50"
         >
-          Sign Up
+          {loading ? "Signing up..." : "Sign Up"}
         </button>
 
-        {message ? <p className="text-sm text-red-600">&#x26A0; {message}</p> : null}
-        <p className="text-sm">Already have an account? <a href="/login" className="text-blue-500">Login</a></p>
+        {message ? <p className="text-sm text-red-600">{message}</p> : null}
+        <p className="text-sm">
+          Already have an account?{" "}
+          <a href="/login" className="text-blue-500">
+            Login
+          </a>
+        </p>
       </form>
     </main>
   );
