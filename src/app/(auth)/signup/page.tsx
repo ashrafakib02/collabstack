@@ -57,6 +57,7 @@ export default function SignupPage() {
           data: {
             name,
           },
+          emailRedirectTo: `${siteUrl}/auth/callback`,
         },
       });
 
