@@ -11,6 +11,10 @@ export default function SignupPage() {
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
+
+  const siteUrl =
+  process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     setMessage("");
