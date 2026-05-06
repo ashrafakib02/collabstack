@@ -1,11 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { usePathname, useSearchParams } from "next/navigation";
+import { usePathname } from "next/navigation";
 
 export default function RouteLoader() {
   const pathname = usePathname();
-  const searchParams = useSearchParams();
+
 
   const [loading, setLoading] = useState(false);
 
@@ -15,7 +15,7 @@ useEffect(() => {
   }, 0);
 
   return () => clearTimeout(timer);
-}, [pathname, searchParams]);
+}, [pathname]);
 
   useEffect(() => {
     const handleClick = (event: MouseEvent) => {
