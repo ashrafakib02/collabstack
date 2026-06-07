@@ -53,12 +53,12 @@ export default function InvitationCountBadge({
   <Link
     href="/dashboard/invitations"
     title="Invitations"
-    className="relative flex items-center justify-center rounded-lg border p-2 hover:bg-gray-100 transition"
+    className="relative flex items-center justify-center rounded-lg border border-border bg-card p-2.5 text-card-foreground transition hover:bg-muted"
   >
     <Bell className="h-5 w-5" />
 
     {count > 0 && (
-      <span className="absolute -right-1 -top-1 flex h-5 min-w-[20px] items-center justify-center rounded-full bg-red-600 px-1 text-[10px] font-semibold text-white">
+      <span className="absolute -right-1 -top-1 flex h-5 min-w-[20px] items-center justify-center rounded-full bg-destructive px-1 text-[10px] font-semibold text-primary-foreground">
         {count > 9 ? "9+" : count}
       </span>
     )}

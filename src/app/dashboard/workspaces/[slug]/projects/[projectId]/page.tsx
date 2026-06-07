@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
+import { ArrowLeft, ClipboardList, Activity, FolderKanban } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import CreateTaskForm from "@/features/task/components/create-task-form";
 import TaskBoard from "@/features/task/components/task-board";
@@ -138,33 +139,44 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
       {},
     ) ?? {};
   return (
-    <main className="min-h-screen bg-gray-50 p-6">
+    <main className="min-h-screen bg-muted/40 p-6">
       <TaskRealtimeListener projectId={project.id} />
 
       <div className="mx-auto max-w-6xl space-y-8">
-        <div className="rounded-xl border bg-white p-6 shadow-sm">
+        <div className="rounded-2xl border border-border bg-card p-6 shadow-sm">
           <Link
             href={`/dashboard/workspaces/${workspace.slug}`}
-            className="text-sm text-blue-600 underline"
+            className="inline-flex items-center gap-1.5 text-sm font-medium text-primary transition hover:opacity-80"
           >
+            <ArrowLeft className="h-4 w-4" />
             Back to Workspace
           </Link>
 
-          <h1 className="mt-3 text-3xl font-bold tracking-tight">
-            {project.name}
-          </h1>
-          <p className="mt-2 text-sm text-gray-500">
-            {project.description || "No description"}
-          </p>
+          <div className="mt-4 flex items-center gap-3">
+            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary text-primary-foreground">
+              <FolderKanban className="h-6 w-6" />
+            </div>
+            <div>
+              <h1 className="text-3xl font-bold tracking-tight text-foreground">
+                {project.name}
+              </h1>
+              <p className="mt-1 text-sm text-muted-foreground">
+                {project.description || "No description"}
+              </p>
+            </div>
+          </div>
         </div>
 
         <CreateTaskForm projectId={project.id} />
 
         <section className="space-y-4">
-          <h2 className="text-2xl font-semibold">Task Board</h2>
+          <h2 className="flex items-center gap-2 text-2xl font-semibold text-foreground">
+            <ClipboardList className="h-6 w-6 text-primary" />
+            Task Board
+          </h2>
 
           {!tasks || tasks.length === 0 ? (
-            <div className="rounded-lg border border-dashed p-6 text-sm text-gray-500">
+            <div className="rounded-2xl border border-dashed border-border bg-card p-8 text-center text-sm text-muted-foreground">
               No task created yet.
             </div>
           ) : (
@@ -175,19 +187,35 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
             />
           )}
         </section>
+
         <section className="space-y-4">
-          <h2 className="text-2xl font-semibold">Recent Activity</h2>
+          <h2 className="flex items-center gap-2 text-2xl font-semibold text-foreground">
+            <Activity className="h-6 w-6 text-primary" />
+            Recent Activity
+          </h2>
 
           {!activityLogs || activityLogs.length === 0 ? (
-            <div className="rounded-lg border border-dashed p-6 text-sm text-gray-500">
+            <div className="rounded-2xl border border-dashed border-border bg-card p-8 text-center text-sm text-muted-foreground">
               No recent activity yet.
             </div>
           ) : (
             <div className="space-y-3">
               {activityLogs.map((log) => (
-                <div key={log.id} className="rounded-lg border p-4 shadow-sm">
-                  <p className="text-sm font-medium">{log.details}</p>
-                  <p className="mt-1 text-xs text-gray-500">{log.action}</p>
+                <div
+                  key={log.id}
+                  className="flex items-start gap-3 rounded-2xl border border-border bg-card p-4 shadow-sm"
+                >
+                  <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
+                    <Activity className="h-4 w-4" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-card-foreground">
+                      {log.details}
+                    </p>
+                    <p className="mt-1 text-xs text-muted-foreground">
+                      {log.action}
+                    </p>
+                  </div>
                 </div>
               ))}
             </div>
