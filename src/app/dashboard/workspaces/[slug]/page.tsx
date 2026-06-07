@@ -2,6 +2,16 @@ import { notFound, redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import CreateProjectForm from "@/features/project/components/create-project-form";
 import Link from "next/link";
+import {
+  ArrowLeft,
+  ArrowRight,
+  FolderKanban,
+  Users,
+  MailCheck,
+  Hash,
+  Briefcase,
+  Shield,
+} from "lucide-react";
 import InviteMemberForm from "@/features/workspace/components/invite-member-form";
 import WorkspacePresence from "@/features/realtime/components/workspace-presence";
 
@@ -87,19 +97,31 @@ export default async function WorkspacePage({ params }: WorkspacePageProps) {
   }
 
   return (
-    <main className="min-h-screen bg-gray-50 p-6">
+    <main className="min-h-screen bg-muted/40 p-6">
       <div className="mx-auto max-w-6xl space-y-8">
-        <div className="rounded-xl border bg-white p-6 shadow-sm">
-          <Link href="/dashboard" className="text-sm text-blue-600 underline">
+        <div className="rounded-2xl border border-border bg-card p-6 shadow-sm">
+          <Link
+            href="/dashboard"
+            className="inline-flex items-center gap-1.5 text-sm font-medium text-primary transition hover:opacity-80"
+          >
+            <ArrowLeft className="h-4 w-4" />
             Back to Dashboard
           </Link>
 
-          <h1 className="mt-3 text-3xl font-bold tracking-tight">
-            {workspace.name}
-          </h1>
-          <p className="mt-2 text-sm text-gray-600">
-            Workspace slug: {workspace.slug}
-          </p>
+          <div className="mt-4 flex items-center gap-3">
+            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary text-primary-foreground">
+              <Briefcase className="h-6 w-6" />
+            </div>
+            <div>
+              <h1 className="text-3xl font-bold tracking-tight text-foreground">
+                {workspace.name}
+              </h1>
+              <p className="mt-1 inline-flex items-center gap-1.5 text-sm text-muted-foreground">
+                <Hash className="h-3.5 w-3.5" />
+                {workspace.slug}
+              </p>
+            </div>
+          </div>
         </div>
 
         <WorkspacePresence
@@ -113,40 +135,48 @@ export default async function WorkspacePage({ params }: WorkspacePageProps) {
         <CreateProjectForm workspaceId={workspace.id} />
 
         <section className="space-y-4">
-          <h2 className="text-2xl font-semibold">Projects</h2>
+          <h2 className="flex items-center gap-2 text-2xl font-semibold text-foreground">
+            <FolderKanban className="h-6 w-6 text-primary" />
+            Projects
+          </h2>
 
           {!projects || projects.length === 0 ? (
-            <div className="rounded-lg border border-dashed p-6 text-sm text-gray-500">
+            <div className="rounded-2xl border border-dashed border-border bg-card p-8 text-center text-sm text-muted-foreground">
               No project created yet.
             </div>
           ) : (
             <div className="grid gap-4 md:grid-cols-2">
               {projects.map((project) => (
-                <div
+                <Link
                   key={project.id}
-                  className="rounded-lg border p-4 shadow-sm"
+                  href={`/dashboard/workspaces/${workspace.slug}/projects/${project.id}`}
+                  className="group rounded-2xl border border-border bg-card p-5 shadow-sm transition hover:border-primary/40 hover:shadow-md"
                 >
-                  <h3 className="text-lg font-semibold">
-                    <Link
-                      href={`/dashboard/workspaces/${workspace.slug}/projects/${project.id}`}
-                    >
+                  <div className="flex items-start justify-between gap-3">
+                    <h3 className="text-lg font-semibold text-card-foreground">
                       {project.name}
-                    </Link>
-                  </h3>
-                  <p className="mt-2 text-sm text-gray-600">
+                    </h3>
+                    <ArrowRight className="h-5 w-5 shrink-0 text-muted-foreground transition group-hover:translate-x-1 group-hover:text-primary" />
+                  </div>
+                  <p className="mt-2 text-sm text-muted-foreground">
                     {project.description || "No description"}
                   </p>
-                </div>
+                </Link>
               ))}
             </div>
           )}
         </section>
+
         <InviteMemberForm workspaceId={workspace.id} />
+
         <section className="space-y-4">
-          <h2 className="text-2xl font-semibold">Workspace Members</h2>
+          <h2 className="flex items-center gap-2 text-2xl font-semibold text-foreground">
+            <Users className="h-6 w-6 text-primary" />
+            Workspace Members
+          </h2>
 
           {!members || members.length === 0 ? (
-            <div className="rounded-lg border border-dashed p-6 text-sm text-gray-500">
+            <div className="rounded-2xl border border-dashed border-border bg-card p-8 text-center text-sm text-muted-foreground">
               No members found.
             </div>
           ) : (
@@ -159,28 +189,40 @@ export default async function WorkspacePage({ params }: WorkspacePageProps) {
                 return (
                   <div
                     key={member.id}
-                    className="rounded-lg border p-4 shadow-sm"
+                    className="flex items-center gap-4 rounded-2xl border border-border bg-card p-5 shadow-sm"
                   >
-                    <h3 className="text-lg font-semibold">
-                      {profile?.name || "Unnamed User"}
-                    </h3>
-                    <p className="mt-1 text-sm text-gray-600">
-                      {profile?.email || "No email"}
-                    </p>
-                    <p className="mt-1 text-sm text-gray-600">
-                      Role: {member.role}
-                    </p>
+                    <div className="flex h-11 w-11 items-center justify-center rounded-full bg-primary/10 text-base font-semibold text-primary">
+                      {(profile?.name || profile?.email || "U")
+                        .charAt(0)
+                        .toUpperCase()}
+                    </div>
+                    <div className="min-w-0">
+                      <h3 className="truncate text-base font-semibold text-card-foreground">
+                        {profile?.name || "Unnamed User"}
+                      </h3>
+                      <p className="truncate text-sm text-muted-foreground">
+                        {profile?.email || "No email"}
+                      </p>
+                      <span className="mt-1 inline-flex items-center gap-1 rounded-full bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground">
+                        <Shield className="h-3 w-3" />
+                        {member.role}
+                      </span>
+                    </div>
                   </div>
                 );
               })}
             </div>
           )}
         </section>
+
         <section className="space-y-4">
-          <h2 className="text-2xl font-semibold">Pending Invitations</h2>
+          <h2 className="flex items-center gap-2 text-2xl font-semibold text-foreground">
+            <MailCheck className="h-6 w-6 text-primary" />
+            Pending Invitations
+          </h2>
 
           {!invitations || invitations.length === 0 ? (
-            <div className="rounded-lg border border-dashed p-6 text-sm text-gray-500">
+            <div className="rounded-2xl border border-dashed border-border bg-card p-8 text-center text-sm text-muted-foreground">
               No invitations yet.
             </div>
           ) : (
@@ -188,15 +230,19 @@ export default async function WorkspacePage({ params }: WorkspacePageProps) {
               {invitations.map((invite) => (
                 <div
                   key={invite.id}
-                  className="rounded-lg border p-4 shadow-sm"
+                  className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-border bg-card p-4 shadow-sm"
                 >
-                  <p className="text-sm font-medium">{invite.email}</p>
-                  <p className="mt-1 text-sm text-gray-600">
-                    Role: {invite.role}
-                  </p>
-                  <p className="mt-1 text-sm text-gray-600">
-                    Status: {invite.status}
-                  </p>
+                  <div>
+                    <p className="text-sm font-medium text-card-foreground">
+                      {invite.email}
+                    </p>
+                    <p className="mt-1 text-sm text-muted-foreground">
+                      Role: {invite.role}
+                    </p>
+                  </div>
+                  <span className="inline-flex items-center rounded-full bg-accent px-3 py-1 text-xs font-medium capitalize text-accent-foreground">
+                    {invite.status}
+                  </span>
                 </div>
               ))}
             </div>
