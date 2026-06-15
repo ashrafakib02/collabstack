@@ -16,6 +16,7 @@ import { createClient } from "@/lib/supabase/server";
 import LogoutButton from "@/components/shared/logout-button";
 import CreateWorkspaceForm from "@/features/workspace/components/create-workspace-form";
 import InvitationCountBadge from "@/features/realtime/components/invitation-count-badge";
+import { AnalyticsCharts } from "@/components/dashboard/analytics-charts";
 
 export default async function DashboardPage() {
   const supabase = await createClient();
@@ -234,6 +235,24 @@ export default async function DashboardPage() {
               </div>
             </div>
           ))}
+        </section>
+
+        {/* analytics charts section */}
+        <section>
+          <div className="mb-6 flex items-center gap-2">
+            <Activity className="h-5 w-5 text-primary" />
+            <h2 className="text-xl font-semibold tracking-tight text-card-foreground">
+              Analytics & Insights
+            </h2>
+          </div>
+          <AnalyticsCharts
+            todoTasks={todoTasks}
+            inProgressTasks={inProgressTasks}
+            doneTasks={doneTasks}
+            totalTasks={totalTasks}
+            totalProjects={totalProjects}
+            totalWorkspaces={totalWorkspaces}
+          />
         </section>
 
         {/* recent activity section */}
