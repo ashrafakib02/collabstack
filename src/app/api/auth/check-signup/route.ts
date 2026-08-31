@@ -1,13 +1,21 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 
-const supabaseAdmin = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
+// Created lazily, inside the handler, instead of at module load time.
+// Next.js executes route module top-level code during the build's
+// page-data-collection step, before runtime-only secrets like
+// SUPABASE_SERVICE_ROLE_KEY are available — so a module-level client
+// here would crash the build in Docker/CI.
+function getSupabaseAdmin() {
+  return createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  );
+}
 
 export async function POST(request: Request) {
   try {
+    const supabaseAdmin = getSupabaseAdmin();
     const { email } = await request.json();
 
     if (!email) {
