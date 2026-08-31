@@ -108,30 +108,32 @@ export default async function WorkspacePage({ params }: WorkspacePageProps) {
             Back to Dashboard
           </Link>
 
-          <div className="mt-4 flex items-center gap-3">
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary text-primary-foreground">
-              <Briefcase className="h-6 w-6" />
+          <div className="mt-4 flex items-center justify-between gap-4">
+            <div className="flex min-w-0 items-center gap-3">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary text-primary-foreground">
+                <Briefcase className="h-6 w-6" />
+              </div>
+              <div className="min-w-0">
+                <h1 className="truncate text-3xl font-bold tracking-tight text-foreground">
+                  {workspace.name}
+                </h1>
+                <p className="mt-1 inline-flex items-center gap-1.5 text-sm text-muted-foreground">
+                  <Hash className="h-3.5 w-3.5" />
+                  {workspace.slug}
+                </p>
+              </div>
             </div>
-            <div>
-              <h1 className="text-3xl font-bold tracking-tight text-foreground">
-                {workspace.name}
-              </h1>
-              <p className="mt-1 inline-flex items-center gap-1.5 text-sm text-muted-foreground">
-                <Hash className="h-3.5 w-3.5" />
-                {workspace.slug}
-              </p>
-            </div>
+            <WorkspacePresence
+              workspaceId={workspace.id}
+              user={{
+                id: user.id,
+                email: user.email,
+                name: user.user_metadata?.name ?? null,
+              }}
+            />
           </div>
         </div>
 
-        <WorkspacePresence
-          workspaceId={workspace.id}
-          user={{
-            id: user.id,
-            email: user.email,
-            name: user.user_metadata?.name ?? null,
-          }}
-        />
         <CreateProjectForm workspaceId={workspace.id} />
 
         <section className="space-y-4">

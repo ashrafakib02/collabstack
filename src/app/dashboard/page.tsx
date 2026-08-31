@@ -16,6 +16,7 @@ import { createClient } from "@/lib/supabase/server";
 import LogoutButton from "@/components/shared/logout-button";
 import CreateWorkspaceForm from "@/features/workspace/components/create-workspace-form";
 import InvitationCountBadge from "@/features/realtime/components/invitation-count-badge";
+import WorkspacePresence from "@/features/realtime/components/workspace-presence";
 import { AnalyticsCharts } from "@/components/dashboard/analytics-charts";
 
 export default async function DashboardPage() {
@@ -331,7 +332,17 @@ export default async function DashboardPage() {
                       </span>
                     </div>
                   </div>
-                  <ArrowRight className="h-5 w-5 text-muted-foreground transition group-hover:translate-x-1 group-hover:text-primary" />
+                  <div className="flex items-center gap-2">
+                    <WorkspacePresence
+                      workspaceId={item.workspace!.id}
+                      user={{
+                        id: user.id,
+                        email: user.email,
+                        name: user.user_metadata?.name ?? null,
+                      }}
+                    />
+                    <ArrowRight className="h-5 w-5 text-muted-foreground transition group-hover:translate-x-1 group-hover:text-primary" />
+                  </div>
                 </Link>
               ))}
             </div>
