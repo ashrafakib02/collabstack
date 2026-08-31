@@ -23,7 +23,14 @@ export default function WorkspacePresence({
   workspaceId,
   user,
 }: WorkspacePresenceProps) {
-  const [onlineUsers, setOnlineUsers] = useState<PresenceUser[]>([]);
+  const [onlineUsers, setOnlineUsers] = useState<PresenceUser[]>([
+    {
+      id: user.id,
+      email: user.email,
+      name: user.name,
+      onlineAt: new Date().toISOString(),
+    },
+  ]);
 
   const channelName = useMemo(
     () => `workspace-presence-${workspaceId}`,
@@ -58,7 +65,19 @@ export default function WorkspacePresence({
         new Map(users.map((item) => [item.id, item])).values(),
       );
 
-      setOnlineUsers(uniqueUsers);
+      setOnlineUsers(
+        uniqueUsers.some((item) => item.id === user.id)
+          ? uniqueUsers
+          : [
+              {
+                id: user.id,
+                email: user.email,
+                name: user.name,
+                onlineAt: new Date().toISOString(),
+              },
+              ...uniqueUsers,
+            ],
+      );
     };
 
     channel
@@ -88,11 +107,15 @@ export default function WorkspacePresence({
   }, [channelName, user.email, user.id, user.name]);
 
   return (
-    <div className="group relative shrink-0" onClick={(event) => event.preventDefault()}>
+    <div
+      className="group relative z-10 flex shrink-0"
+      onClick={(event) => event.preventDefault()}
+      onMouseDown={(event) => event.preventDefault()}
+    >
       <button
         type="button"
         aria-label={`${onlineUsers.length} ${onlineUsers.length === 1 ? "user" : "users"} online`}
-        className="inline-flex items-center gap-2 rounded-full border border-border bg-background px-3 py-1.5 text-xs font-medium text-card-foreground shadow-sm transition hover:border-primary/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        className="inline-flex min-w-[5.25rem] items-center justify-center gap-1.5 rounded-full border border-primary/25 bg-primary/10 px-2.5 py-1.5 text-xs font-semibold text-primary shadow-sm transition hover:border-primary/50 hover:bg-primary/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
       >
         <span className="relative flex h-2.5 w-2.5">
           <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary/50" />
