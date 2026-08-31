@@ -32,6 +32,12 @@ type TaskBoardProps = {
   attachmentsByTask: Record<string, TaskAttachment[]>;
 };
 
+type TaskRealtimeUpdate = {
+  eventType: "INSERT" | "UPDATE" | "DELETE";
+  new: Task;
+  old: Partial<Task>;
+};
+
 const columns = [
   { key: "todo", title: "Todo" },
   { key: "in_progress", title: "In Progress" },
@@ -101,6 +107,40 @@ export default function TaskBoard({
   useEffect(() => {
     setLocalTasks(tasks);
   }, [tasks]);
+
+  useEffect(() => {
+    const handleRealtimeUpdate = (event: Event) => {
+      const { eventType, new: nextTask, old: previousTask } = (
+        event as CustomEvent<TaskRealtimeUpdate>
+      ).detail;
+
+      setLocalTasks((currentTasks) => {
+        if (eventType === "DELETE") {
+          return currentTasks.filter((task) => task.id !== previousTask.id);
+        }
+
+        const existingIndex = currentTasks.findIndex(
+          (task) => task.id === nextTask.id,
+        );
+
+        if (eventType === "INSERT" && existingIndex === -1) {
+          return [nextTask, ...currentTasks];
+        }
+
+        if (existingIndex === -1) {
+          return currentTasks;
+        }
+
+        return currentTasks.map((task, index) =>
+          index === existingIndex ? { ...task, ...nextTask } : task,
+        );
+      });
+    };
+
+    window.addEventListener("task-realtime-update", handleRealtimeUpdate);
+    return () =>
+      window.removeEventListener("task-realtime-update", handleRealtimeUpdate);
+  }, []);
 
   const handleDragEnd = async (event: DragEndEvent) => {
     const { active, over } = event;
