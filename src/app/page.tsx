@@ -7,7 +7,9 @@ import {
   Zap,
   ShieldCheck,
   ArrowRight,
+  LayoutDashboard,
 } from "lucide-react";
+import { createClient } from "@/lib/supabase/server";
 
 const features = [
   {
@@ -27,7 +29,12 @@ const features = [
   },
 ];
 
-export default function Home() {
+export default async function Home() {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
   return (
     <main className="min-h-screen flex flex-col">
       {/* Header */}
@@ -40,11 +47,20 @@ export default function Home() {
             <span className="text-lg font-bold tracking-tight">CollabStack</span>
           </div>
           <Link
-            href="/login"
+            href={user ? "/dashboard" : "/login"}
             className="inline-flex items-center gap-2 rounded-md px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-muted"
           >
-            <LogIn className="h-4 w-4" />
-            Login
+            {user ? (
+              <>
+                <LayoutDashboard className="h-4 w-4" />
+                Dashboard
+              </>
+            ) : (
+              <>
+                <LogIn className="h-4 w-4" />
+                Login
+              </>
+            )}
           </Link>
         </div>
       </header>
@@ -67,21 +83,34 @@ export default function Home() {
         </p>
 
         <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row">
-          <Link
-            href="/signup"
-            className="inline-flex w-full items-center justify-center gap-2 rounded-md bg-primary px-6 py-3 text-base font-semibold text-primary-foreground shadow-sm transition-colors hover:bg-primary/90 sm:w-auto"
-          >
-            <UserPlus className="h-5 w-5" />
-            Get started free
-            <ArrowRight className="h-4 w-4" />
-          </Link>
-          <Link
-            href="/login"
-            className="inline-flex w-full items-center justify-center gap-2 rounded-md border border-border bg-card px-6 py-3 text-base font-semibold text-foreground transition-colors hover:bg-muted sm:w-auto"
-          >
-            <LogIn className="h-5 w-5" />
-            Sign in
-          </Link>
+          {user ? (
+            <Link
+              href="/dashboard"
+              className="inline-flex w-full items-center justify-center gap-2 rounded-md bg-primary px-6 py-3 text-base font-semibold text-primary-foreground shadow-sm transition-colors hover:bg-primary/90 sm:w-auto"
+            >
+              <LayoutDashboard className="h-5 w-5" />
+              Go to dashboard
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+          ) : (
+            <>
+              <Link
+                href="/signup"
+                className="inline-flex w-full items-center justify-center gap-2 rounded-md bg-primary px-6 py-3 text-base font-semibold text-primary-foreground shadow-sm transition-colors hover:bg-primary/90 sm:w-auto"
+              >
+                <UserPlus className="h-5 w-5" />
+                Get started free
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+              <Link
+                href="/login"
+                className="inline-flex w-full items-center justify-center gap-2 rounded-md border border-border bg-card px-6 py-3 text-base font-semibold text-foreground transition-colors hover:bg-muted sm:w-auto"
+              >
+                <LogIn className="h-5 w-5" />
+                Sign in
+              </Link>
+            </>
+          )}
         </div>
       </section>
 
